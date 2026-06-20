@@ -38,8 +38,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;ma
 .eyebrow{font-family:'Space Grotesk';font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .eyebrow b{color:var(--accent);font-weight:700}
 .save{font-size:10.5px;color:var(--faint);font-family:'JetBrains Mono';letter-spacing:.04em;padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface3)}
-.tabs{display:flex;gap:5px;background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:5px;margin-bottom:18px;position:sticky;top:8px;z-index:5;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);box-shadow:var(--shadow-sm),0 10px 30px -16px rgba(0,0,0,.7)}
-.tab{flex:1;border:0;background:transparent;color:var(--muted);font-family:'Space Grotesk';font-weight:700;font-size:13px;padding:11px 3px;border-radius:13px;cursor:pointer;transition:color .2s,background .2s,box-shadow .2s;letter-spacing:.01em}
+.tabs{display:flex;gap:5px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:5px;margin-bottom:18px;position:sticky;top:8px;z-index:5;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);box-shadow:var(--shadow-sm),0 10px 30px -16px rgba(0,0,0,.7)}
+.tab{flex:1 0 auto;white-space:nowrap;border:0;background:transparent;color:var(--muted);font-family:'Space Grotesk';font-weight:700;font-size:13px;padding:11px 3px;border-radius:13px;cursor:pointer;transition:color .2s,background .2s,box-shadow .2s;letter-spacing:.01em}
 .tab[aria-selected=true]{background:linear-gradient(180deg,var(--accent-soft),rgba(231,172,78,.05));color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-line),0 4px 14px -8px var(--accent-glow)}
 .view{display:none;animation:fade .22s ease}
 .view.on{display:block}
@@ -130,6 +130,22 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;ma
 .phrase.speaking{border-color:var(--accent-line);background:var(--accent-soft);color:var(--accent);box-shadow:0 0 0 1px var(--accent-line),0 8px 24px -12px var(--accent-glow)}
 .phrase.speaking .picon{color:var(--accent)}
 .prule{font-size:12px;color:#F3CFC4;border-left:3px solid var(--warn);background:var(--warn-soft);border-radius:0 12px 12px 0;padding:9px 12px;margin:1px 0 6px}
+.tabs::-webkit-scrollbar{display:none}
+.tgroup{margin-bottom:18px}
+.tgroup-h{font-family:'Space Grotesk';font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:6px 2px 10px}
+.acc{border:1px solid var(--line);background:var(--surface2);border-radius:var(--r-sm);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.acc.open{border-color:var(--accent-line)}
+.acc-q{width:100%;text-align:left;border:0;background:transparent;color:var(--text);font-family:'Space Grotesk';font-weight:600;font-size:14.5px;line-height:1.35;padding:14px 15px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.acc.open .acc-q{color:var(--accent)}
+.chev{color:var(--faint);font-size:13px;flex:0 0 auto;transition:transform .25s}
+.acc.open .chev{transform:rotate(90deg);color:var(--accent)}
+.acc-p{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.acc.open .acc-p{max-height:900px}
+.acc-inner{padding:0 15px 15px}
+.tbul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px}
+.tbul li{font-size:13.5px;color:#E2DACE;line-height:1.5}
+.tbul li::marker{color:var(--accent)}
+.acc-rule{margin-top:12px;font-size:12px;color:#F3CFC4;border-left:3px solid var(--warn);background:var(--warn-soft);border-radius:0 10px 10px 0;padding:8px 11px;line-height:1.5}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}body::after{animation:none!important}}
 </style>
 </head>
@@ -139,6 +155,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;ma
 <div class="tabs" role="tablist">
 <button class="tab" id="tab-cards" aria-selected="true" onclick="switchTab('cards')">Kartice</button>
 <button class="tab" id="tab-fraze" aria-selected="false" onclick="switchTab('fraze')">Fraze</button>
+<button class="tab" id="tab-teze" aria-selected="false" onclick="switchTab('teze')">Teze</button>
 <button class="tab" id="tab-drill" aria-selected="false" onclick="switchTab('drill')">Drill</button>
 <button class="tab" id="tab-audio" aria-selected="false" onclick="switchTab('audio')">Audio</button>
 <button class="tab" id="tab-quiz" aria-selected="false" onclick="switchTab('quiz')">Kviz</button>
@@ -152,6 +169,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;ma
 <section class="view" id="view-fraze">
 <div class="panel"><div class="row"><div><div class="qlabel">Fraze za ponavljanje</div><div class="hint">Tapni frazu da je čuješ. „Slušaj sve" pušta celu grupu — pusti i mrmljaj za njom.</div></div></div></div>
 <div id="phraseBox"></div>
+</section>
+<section class="view" id="view-teze">
+<div class="panel"><div class="row"><div><div class="qlabel">Pitanja — teze</div><div class="hint">Lista svih pitanja. Klikni strelicu da otvoriš/zatvoriš skraćen odgovor u tezama.</div></div></div></div>
+<div id="tezeBox"></div>
 </section>
 <section class="view" id="view-drill">
 <div class="panel">
@@ -327,7 +348,55 @@ function phraseText(gi,ii){const it=PHRASES[gi].items[ii]; return typeof it==='s
 async function tapPhrase(gi,ii,el){stopAllSpeech(); phraseToken++; const my=phraseToken; if(el)el.classList.add('speaking'); await speakP(phraseText(gi,ii)); if(el&&my===phraseToken)el.classList.remove('speaking')}
 async function playSection(gi){stopAllSpeech(); phrasePlaying=true; const my=++phraseToken; const nodes=[...document.querySelectorAll('#phraseBox [data-g="'+gi+'"]')]; const items=PHRASES[gi].items; for(let i=0;i<items.length;i++){ if(!phrasePlaying||my!==phraseToken)return; const n=nodes[i]; if(n){n.classList.add('speaking'); n.scrollIntoView({block:'center',behavior:'smooth'})} await speakP(phraseText(gi,i)); if(n)n.classList.remove('speaking'); if(!phrasePlaying||my!==phraseToken)return; await waitP(850) } phrasePlaying=false}
 function renderPhrases(){let html=''; PHRASES.forEach((g,gi)=>{ const head=`<div class="psec"><div class="psec-head"><h3>${esc(g.group)}</h3>${g.tone!=='kw'?`<button class="btn ghost playall" onclick="playSection(${gi})">▶ Slušaj sve</button>`:''}</div>`; let body=''; if(g.tone==='kw'){ body=`<div class="meta">${g.items.map(k=>`<span class="pill">${esc(k)}</span>`).join('')}</div>` } else { body='<div class="plist">'; g.items.forEach((it,ii)=>{ const text=typeof it==='string'?it:it.t; const cls='phrase'+(g.tone==='num'?' num':''); body+=`<button class="${cls}" data-g="${gi}" data-i="${ii}" onclick="tapPhrase(${gi},${ii},this)"><span class="ptext">${esc(text)}</span><span class="picon">▸</span></button>`; if(it.rule)body+=`<div class="prule">${esc(it.rule)}</div>` }); body+='</div>' } html+=head+body+'</div>' }); $('phraseBox').innerHTML=html}
-makeFilters(); renderCard(); renderDrill(); renderAudio(); restartQuiz(); renderPhrases(); if('speechSynthesis'in window)loadVoices();
+const THESES={
+"pitch":["12+ yrs regulated, SLA-driven ops","NCR Atleos: 170+ FIs, $300M+, 24/7, penalties","Strength: turn noisy ops into systems — KPIs, cadence, escalation, middle mgmt","ARRISE = same: live, real-time, people + uptime + compliance together"],
+"headcount":["Never had 500 on an org chart — won't pretend","Formal peak ~80–100, several sub-teams","Real scale = complexity: $300M+, 170+ FIs, segments, SLA","At 500: management layer + metrics + rhythm, not personal supervision"],
+"risk500":["Fair concern — not claiming 500-on-chart","I manage complexity through systems: KPIs, escalation, mid-mgmt","Head builds the system, doesn't supervise every dealer","If exact 500 non-negotiable, understood; if goal is a controllable op, I'm strong"],
+"igaming":["Sector change, not a skill change","Banking: ATM down = instant impact + penalty; studio = same logic","I build software; ARRISE is software/services","Learn domain specifics; operating muscle transfers"],
+"termination":["Employer-initiated, within restructuring, being finalized","Focused on the next chapter","STOP — pivot to what I bring to ARRISE"],
+"dispute":["Formal process tied to separation, kept separate","No restriction on availability; no criminal/regulatory issue","References available","Prefer to focus on the role"],
+"union":["Yes — leadership role in workplace representation","Gives me employee relations + fairness + Serbian labor law","No agenda; prevent adversarial dynamics","Clear rules, consistent treatment, early communication"],
+"salary":["Permanent: €4,500–6,000 net / month","Depends on package, bonus, scope, authority","B2B = separate fee calc, not vs net"],
+"first90":["0–30: listen & map (org, KPIs, WFM, attrition, downtime, escalation)","31–60: find 2–3 biggest leaks + build measurement","61–90: focused quick wins on a baseline + align rhythm","Goal: predictability, not noise"],
+"kpis":["Operational: uptime, downtime by cause, incident response","Workforce: adherence, shrinkage, absenteeism, attrition, overtime","Quality: presenter QA, errors, compliance, complaints","Financial: cost/table-hour, OT leakage, cost of downtime","The 8–12 that drive decisions, not 50"],
+"basic-strengths":["Turn messy ops into systems — runs without me in the room","Calm under pressure (penalty-driven background)","Builder: dashboards, automation, redesign — improve, not just maintain"],
+"basic-weakness":["Move fast → once quoted before validating prerequisites, had to walk back","Lesson stuck: validation gates before external commitment","Weakness = impatience; control = check dependencies first"],
+"basic-fiveyears":["Running a larger op / the whole site","Want broader ownership: build once, scale","Do this well → more scope, more P&L, more leadership layer","Grow deep in one business, not jump around"],
+"basic-whyhire":["Combination: 24/7 regulated discipline + people leadership + builder","Transparent: no live casino, no 500-on-chart","Ran complex ops — performance/compliance/escalation measured daily","Know how to build cadence + reporting → controllable op"],
+"basic-achievement":["NPS 23 → 65 across a 170+ portfolio","Not a campaign — redesigned engagement, fixed handoffs, added rhythm","Held because structural","Happened during a corporate split — harder"],
+"basic-failure":["Year-end crunch: delegated SLA tracker, didn't review it","Boss caught wrong numbers → hurt the whole presentation","Owned + corrected","Rule since: cross-check vs prior trends, explain every number"],
+"basic-pressure":["Default to structure","Separate real consequences (SLA, compliance, customer) from noise","Biggest risk first, document, keep op running","Calm op = the system worrying, not the manager"],
+"basic-conflict":["Product team removed reporting 50 clients used, no warning","Didn't make it personal — showed cost of lost trust > dev effort","Proposed keep basic feature + build paid upgrade; restored in 2 weeks","Align on business risk, not who's right"],
+"basic-motivation":["Building something that runs without me","A process holding under pressure > personal firefighting","Ops = measurable impact (attrition, uptime, a number)","Maintenance bores me; predictability + scale engages me"],
+"basic-leadership":["Direct, structured, predictable","Clear expectations + reasons; don't change rules randomly","Not motivational-speech — build systems, managers accountable","Predictability > charisma in shift work"],
+"basic-whyleave":["Long period at NCR Atleos + major restructuring","Want broader ownership in a growth environment","Apply discipline where it compounds, not where consolidating","ARRISE = large, live, tech-enabled — direct fit"],
+"basic-questions":["What does success in the first 6 months look like?","Biggest operational challenge now (attrition/uptime/scheduling/structure)?","How mature is KPI/reporting?","Where is direct authority vs influence (HR/budget/compliance)?"],
+"role-run247":["Metrics + cadence + management layers","Metrics: uptime, downtime cause, coverage, adherence, shrinkage, quality, attrition, OT, cost","Cadence: daily/weekly/monthly review, actions owned","Layers keep it stable when I'm off the floor"],
+"role-attrition":["Segment first: shift, tenure, manager, language, reason","Rarely one cause, rarely even across the floor","Often schedule instability / weak 1st-line mgr / onboarding / no path","Attack the biggest driver; invest in middle management"],
+"role-wfm":["Start with demand: peaks, skills, languages, mandatory coverage, buffer","Compare vs actual adherence, shrinkage, OT, last-minute changes","Predictable for business + fair for people","Random schedule → attrition; WFM = retention"],
+"role-outage":["Response already in a playbook: owner, comms, workaround, escalate, document","My job: ensure the system exists + every shift knows it","After: root cause (tech/staffing/process/vendor/training)","Turn into a preventive action"],
+"role-quality":["Not separate — poor quality = rework, complaints, compliance risk → hurts volume","Build quality into the process: standards, training, QA calibration","Not a final inspection","Preventing failure cheaper than paying later"],
+"role-cost":["Find waste with no value: wrong-slot overstaffing, OT leakage, avoidable downtime, duplicate reporting, recurring incidents","Even cuts = lazy + risky","Remove cost not tied to performance; protect quality"],
+"role-compliance":["Part of the operating model, not a legal afterthought","Night work, OT, rest, shift limits, time records = where inspection catches you","Compliant by design + clean records → audit-ready always","(Don't cite the union as the source)"],
+"role-culture":["Built through consistency","People watch: fair rules, same across shifts, predictable schedules, recognition, problems solved","Focus the management layer first","500 people experience the company via the 1st-line manager"],
+"role-midmgr":["Define the role: own / decide / escalate / metrics","Coach through real cases, not slides","Few strong managers > thick layer forwarding problems up","Middle mgmt = main lever"],
+"role-underperf":["Separate skill / will / system","Skill → train; unclear expectations → fix system; won't → accountability","Fair, but don't let it become the team's problem"],
+"role-structure500":["Not a week-one PowerPoint redesign","First understand layers, spans, shift structure, where accountability breaks","Clear ownership by shift/zone; strong Studio + Shift Managers; Team Leads w/ authority; WFM + reporting = one truth","Each layer: owns metrics, knows decisions + escalation"],
+"role-hrconflict":["Align on business risk, not preference","HR owns policy/ER; ops owns delivery/floor","Same data: attrition, absence, performance, grievances, funnel, manager quality","Disagree → document risk, propose options, escalate professionally"],
+"role-whyarrise":["Combines: operational scale + live tech + people leadership","Studio = real-time service op (staffing/uptime/compliance/quality/CX together hourly)","High-impact local leadership w/ global standards","Not just maintain — make predictable + scalable"],
+"role-knowrole":["Closer to Site/Operations Director than narrow studio manager","Covers strategy, scaling, readiness, daily performance, WFM, Serbian compliance, HR, retention, culture, budget, facilities, vendors, BCP","Connect floor reality with senior leadership + global standards"],
+"role-ethics":["Comfortable in regulated iGaming","Expect a responsible, compliant operation","Focus: operational excellence, compliance, people, quality","Serious regulated business, not entertainment enthusiasm"],
+"role-onsite":["Yes — can't lead a studio remotely, especially early","Normal cadence = business hours","Present/available for critical incidents, shift reviews, key moments","Goal: a system not dependent on constant emergencies"],
+"role-frontline":["Not on a studio floor — won't blur that","Have led: SLA 24/7 delivery, WFM, performance mgmt, escalation governance","Studio layer (presenter perf, coverage, adherence, shrinkage, on-camera) — pick up fast w/ Studio Managers","Bring the discipline; learn the mechanics"],
+"role-salaryrange":["Senior op leadership: on-site ownership, 24/7, large workforce, compliance risk, cross-functional","Flexible within range by scope/package","Head-of-Site level, not department manager"],
+"role-extescalation":["No — default resolve internally, professionally","External escalation = last-resort compliance channel, not a style","Daily: identify risk, document, fix control, keep running","New chapter, not a platform for old conflicts"],
+"role-safety":["Safety/compliance must be operational, not just formal","Crisis comms, ownership, evidence trails must work in real conditions","No drama — make the playbook real","Clear procedures, owners, training, calm execution"],
+"role-bringconflict":["No — new professional chapter, not a platform","Strong on fair process/compliance, but day-to-day practical + business-focused","Avoid conflict by running clearly: consistent rules, comms, documented decisions, early solving"],
+"role-cvcurrent":["Not in an employment relationship now","Can send an updated CV — same scope/results, cleaner timeline","Available, can move quickly if mutual fit"]
+};
+function toggleAcc(btn){const acc=btn.parentElement;const open=acc.classList.toggle('open');btn.setAttribute('aria-expanded',open?'true':'false')}
+function renderTeze(){const groups=[['Basic','Osnovna'],['Pitch','Fit / motivacija'],['Ops','Operativa'],['Risk','Osetljivo / gap']];let html='';groups.forEach(g=>{const tier=g[0],label=g[1];const items=ALL.filter(x=>x.type==='SCRIPT'&&x.tier===tier);if(!items.length)return;html+=`<div class="tgroup"><div class="tgroup-h">${esc(label)} · ${items.length}</div>`;items.forEach(it=>{const pts=THESES[it.id]||[];html+=`<div class="acc"><button class="acc-q" onclick="toggleAcc(this)" aria-expanded="false"><span>${esc(it.prompt||it.title)}</span><span class="chev">▸</span></button><div class="acc-p"><div class="acc-inner"><ul class="tbul">${pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>${it.rule?`<div class="acc-rule">${esc(it.rule)}</div>`:''}</div></div></div>`});html+='</div>'});$('tezeBox').innerHTML=html}
+makeFilters(); renderCard(); renderDrill(); renderAudio(); restartQuiz(); renderPhrases(); renderTeze(); if('speechSynthesis'in window)loadVoices();
 try{const _t=LS.get('arrise_v2_tab','cards'); if(_t&&_t!=='cards'&&$('view-'+_t))switchTab(_t)}catch(e){}
 window.addEventListener('beforeunload',()=>speechSynthesis&&speechSynthesis.cancel());
 </script>
